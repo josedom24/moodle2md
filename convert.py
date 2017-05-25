@@ -1,10 +1,29 @@
 from lxml import etree
+import os
+DIR="course/"
+FICHERO="README.md"
 
+def borrar(fich):
+    f=open(DIR+fich,"w")
+    f.close()
+
+def escribir(fich,texto="\n"):
+    with open(DIR+fich,"a") as fichero:
+        fichero.write(texto.encode("utf-8"))
+        if len(texto)>1 and texto[-1]!="\n":
+            fichero.write("\n")
+
+try:
+    os.mkdir(DIR)
+except:
+    pass
+
+borrar(FICHERO)
 doc = etree.parse('copia/moodle_backup.xml')
 
 titulo=doc.find("information/original_course_fullname").text
-print "# %s" % titulo
-print
+escribir(FICHERO,"# %s" % titulo)
+escribir(FICHERO)
 
 secciones=doc.find("information/contents/sections")
 for seccion in secciones:
@@ -14,21 +33,19 @@ for seccion in secciones:
     if len(summary)>0 and summary[0]=="\n":
         summary=summary[1:]
     if len(summary)>0:
-        print
-        print "## %s"%summary
-        print
+        escribir(FICHERO)
+        escribir(FICHERO,"## %s"%summary)
+        escribir(FICHERO)
     sectionid=seccion.find("sectionid").text
     actividades=doc.xpath("//activity[sectionid=%s]"%sectionid)
     for actividad in actividades:
         tipo = actividad.find("modulename").text
         if tipo=="label":
-            print
-            print "#### %s" % actividad.find("title").text
-            print
+            escribir(FICHERO)
+            escribir(FICHERO,"#### %s" % actividad.find("title").text)
+            escribir(FICHERO)
         elif tipo=="url":
             docactivity=etree.parse("copia/%s/url.xml" % actividad.find("directory").text)
-            print
-            print "* [%s](%s)"%(actividad.find("title").text,docactivity.find("url/externalurl").text)
-            print
+            escribir(FICHERO, "* [%s](%s)"%(actividad.find("title").text,docactivity.find("url/externalurl").text))
         else:
-            print "* %s (%s)" % (actividad.find("title").text,actividad.find("modulename").text)
+            escribir(FICHERO, "* %s (%s)" % (actividad.find("title").text,actividad.find("modulename").text))
