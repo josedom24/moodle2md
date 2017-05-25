@@ -64,8 +64,15 @@ for seccion in secciones:
             nomfich=actividad.find("title").text.replace(" ","_")
             nomfich=nomfich.replace(".","")+".md"
             borrar(nomfich,DIR+"doc/")
-            for event in docassign.getroot():
-                escribir(nomfich,event.find("description").text,DIR+"doc/")
+            if len(docassign.getroot())>0:
+                for event in docassign.getroot():
+                    escribir(nomfich,event.find("description").text,DIR+"doc/")
+            else:
+                docassign=etree.parse("copia/%s/assign.xml" % actividad.find("directory").text)
+                try:
+                    escribir(nomfich,docassign.find("assign/intro").text,DIR+"doc/")
+                except:
+                    pass
             escribir(FICHERO,"* [%s](%s)"%(actividad.find("title").text,"doc/"+nomfich))
 
         else:
