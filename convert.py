@@ -1,14 +1,14 @@
 from lxml import etree
-import os
+import os,shutil
 DIR="course/"
 FICHERO="README.md"
 
-def borrar(fich):
-    f=open(DIR+fich,"w")
+def borrar(fich,dir=DIR):
+    f=open(dir+fich,"w")
     f.close()
 
-def escribir(fich,texto="\n"):
-    with open(DIR+fich,"a") as fichero:
+def escribir(fich,texto="\n",dir=DIR):
+    with open(dir+fich,"a") as fichero:
         fichero.write(texto.encode("utf-8"))
         if len(texto)>1 and texto[-1]!="\n":
             fichero.write("\n")
@@ -18,6 +18,18 @@ try:
 except:
     pass
 
+try:
+    os.chdir(DIR)
+    os.mkdir("files")
+except:
+    os.rmdir("files")
+    os.mkdir("files")
+try:
+    os.mkdir("doc")
+except:
+    shutil.rmtree("doc")
+    os.mkdir("doc")
+os.chdir("..")
 borrar(FICHERO)
 doc = etree.parse('copia/moodle_backup.xml')
 
@@ -47,5 +59,14 @@ for seccion in secciones:
         elif tipo=="url":
             docactivity=etree.parse("copia/%s/url.xml" % actividad.find("directory").text)
             escribir(FICHERO, "* [%s](%s)"%(actividad.find("title").text,docactivity.find("url/externalurl").text))
+        elif tipo=="assign":
+            docassign=etree.parse("copia/%s/calendar.xml" % actividad.find("directory").text)
+            nomfich=actividad.find("title").text.replace(" ","_")
+            nomfich=nomfich.replace(".","")+".md"
+            borrar(nomfich,DIR+"doc/")
+            for event in docassign.getroot():
+                escribir(nomfich,event.find("description").text,DIR+"doc/")
+            escribir(FICHERO,"* [%s](%s)"%(actividad.find("title").text,DIR+"doc/"+nomfich))
+
         else:
             escribir(FICHERO, "* %s (%s)" % (actividad.find("title").text,actividad.find("modulename").text))
