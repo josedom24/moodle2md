@@ -41,13 +41,17 @@ secciones=doc.find("information/contents/sections")
 for seccion in secciones:
     docseccion=etree.parse("copia/%s/section.xml" % seccion.find("directory").text)
     summary=docseccion.find("summary").text
-    summary=summary.split(">")[1].split("<")[0]
-    if len(summary)>0 and summary[0]=="\n":
-        summary=summary[1:]
-    if len(summary)>0:
-        escribir(FICHERO)
-        escribir(FICHERO,"## %s"%summary)
-        escribir(FICHERO)
+
+    #summary=summary.split(">")[1].split("<")[0]
+    try:
+        if len(summary)>0 and summary[0]=="\n":
+            summary=summary[1:]
+        if len(summary)>0:
+            escribir(FICHERO)
+            escribir(FICHERO,"## %s"%summary)
+            escribir(FICHERO)
+    except:
+        pass
     sectionid=seccion.find("sectionid").text
     actividades=doc.xpath("//activity[sectionid=%s]"%sectionid)
     for actividad in actividades:
