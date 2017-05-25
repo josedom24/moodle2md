@@ -66,7 +66,7 @@ for seccion in secciones:
             borrar(nomfich,DIR+"doc/")
             for event in docassign.getroot():
                 escribir(nomfich,event.find("description").text,DIR+"doc/")
-            escribir(FICHERO,"* [%s](%s)"%(actividad.find("title").text,DIR+"doc/"+nomfich))
+            escribir(FICHERO,"* [%s](%s)"%(actividad.find("title").text,"doc/"+nomfich))
 
         else:
             escribir(FICHERO, "* %s (%s)" % (actividad.find("title").text,actividad.find("modulename").text))
