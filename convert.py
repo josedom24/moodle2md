@@ -14,6 +14,7 @@ def escribir(fich,texto="\n",dir=DIR):
             fichero.write("\n")
 
 try:
+    shutil.rmtree(DIR)
     os.mkdir(DIR)
 except:
     pass
@@ -27,7 +28,7 @@ except:
 try:
     os.mkdir("doc")
 except:
-    shutil.rmtree("doc")
+    
     os.mkdir("doc")
 os.chdir("..")
 borrar(FICHERO)
@@ -88,7 +89,16 @@ for seccion in secciones:
                 except:
                     pass
             escribir(FICHERO,"* [%s](%s)"%(actividad.find("title").text,"doc/"+nomfich))
+        elif tipo=="resource":
+            docresource=etree.parse("copia/%s/resource.xml" % actividad.find("directory").text)
+            fileid=docresource.getroot().get("contextid")
+            
+            docfiles=etree.parse("copia/files.xml")
+            fichero=docfiles.xpath("//file[contextid=%s]"%fileid)
 
+            shutil.copyfile("copia/files/%s/%s"%(fichero[0].find("contenthash").text[0:2],fichero[0].find("contenthash").text),DIR+"files/%s"%fichero[0].find("filename").text) 
+            escribir(FICHERO,"* [%s](%s)"%(actividad.find("title").text,"files/"+fichero[0].find("filename").text))
+            
         else:
             escribir(FICHERO, "* %s (%s)" % (actividad.find("title").text,actividad.find("modulename").text))
 
