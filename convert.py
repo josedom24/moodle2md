@@ -27,6 +27,13 @@ def escribir(fich,texto="\n",dir=DIR):
         if len(texto)>1 and texto[-1]!="\n":
             fichero.write("\n")
 
+def quitar_html(html):
+    while html.find("<")>-1:
+        pi=html.find("<")
+        pf=html.find(">")
+        html=html[:pi]+html[pf+1:]
+    return html
+
 try:
     shutil.rmtree(DIR)
     os.mkdir(DIR)
@@ -71,7 +78,7 @@ for seccion in secciones:
             summary=summary[1:]
         if len(summary)>0:
             escribir(FICHERO)
-            escribir(FICHERO,"## %s"%summary)
+            escribir(FICHERO,"## %s"%quitar_html(summary))
             escribir(FICHERO)
     except:
         pass
