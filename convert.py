@@ -31,9 +31,13 @@ except:
     os.mkdir("doc")
 os.chdir("..")
 borrar(FICHERO)
+
+cursodoc=etree.parse('copia/course/course.xml')
+titulo=cursodoc.find("fullname").text
+
 doc = etree.parse('copia/moodle_backup.xml')
 
-titulo=doc.find("information/original_course_fullname").text
+#titulo=doc.find("information/original_course_fullname").text
 escribir(FICHERO,"# %s" % titulo)
 escribir(FICHERO)
 
