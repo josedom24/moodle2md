@@ -8,7 +8,12 @@ FICHERO="README.md"
 def elimina_tildes(cadena):
     s = ''.join((c for c in unicodedata.normalize('NFD',unicode(cadena)) if unicodedata.category(c) != 'Mn'))
     return s
-
+def eliminar_caracteres_nombre_fichero(nomfich):
+    car=("/","?","(",")"," ")
+    for c in car:
+        nomfich=nomfich.replace(c,"_")
+    nomfich=elimina_tildes(nomfich)
+    return nomfich
 
 def borrar(fich,dir=DIR):
     f=open(dir+fich,"w")
@@ -81,10 +86,9 @@ for seccion in secciones:
             escribir(FICHERO, "* [%s](%s)"%(actividad.find("title").text,docactivity.find("url/externalurl").text))
         elif tipo=="assign":
             docassign=etree.parse("copia/%s/calendar.xml" % actividad.find("directory").text)
-            nomfich=actividad.find("title").text.replace(" ","_")
-            nomfich=actividad.find("title").text.replace("/","_")
-            nomfich=nomfich.replace(".","")+".md"
-            nomfich=elimina_tildes(nomfich)
+            nomfich=actividad.find("title").text+".md"
+            nomfich=eliminar_caracteres_nombre_fichero(nomfich)
+            
             borrar(nomfich,DIR+"doc/")
             if len(docassign.getroot())>0:
                 for event in docassign.getroot():
@@ -109,11 +113,8 @@ for seccion in secciones:
             escribir(FICHERO,"* [%s](%s)"%(actividad.find("title").text,"files/"+fichero[0].find("filename").text))
         elif tipo=="page":
             docpage=etree.parse("copia/%s/page.xml" % actividad.find("directory").text)    
-            nomfich=actividad.find("title").text.replace(" ","_")
-            nomfich=nomfich.replace("/","_")
-            nomfich=nomfich.replace(".","")+".md"
-            nomfich=elimina_tildes(nomfich)
-            print nomfich
+            nomfich=actividad.find("title").text+".md"
+            nomfich=eliminar_caracteres_nombre_fichero(nomfich)
             borrar(nomfich,DIR+"doc/")
             try:
                 escribir(nomfich,"# %s" % actividad.find("title").text,DIR+"doc/")
