@@ -27,12 +27,23 @@ def escribir(fich,texto="\n",dir=DIR):
         if len(texto)>1 and texto[-1]!="\n":
             fichero.write("\n")
 
+def images(html):
+    html= html.replace("$@FILEPHP@$$@SLASH@$img$@SLASH@$","img/")
+    html= html.replace("$@FILEPHP@$$@SLASH@$","img/")
+
 def quitar_html(html):
     while html.find("<")>-1:
         pi=html.find("<")
         pf=html.find(">")
         html=html[:pi]+html[pf+1:]
     return html
+
+def copiar_img():
+    filesdoc=etree.parse('copia/files.xml')
+    imagenes=filesdoc.xpath("//file/filename[contains(text(),'.jpg') or contains(text(),'.png')  or contains(text(),'.gif') ]/..")
+    for img in imagenes:
+        shutil.copyfile("copia/files/%s/%s"%(img.find("contenthash").text[0:2],img.find("contenthash").text),DIR+"img/%s"%img.find("filename").text) 
+
 
 try:
     shutil.rmtree(DIR)
@@ -43,17 +54,15 @@ except:
 try:
     os.chdir(DIR)
     os.mkdir("files")
-except:
-    os.rmdir("files")
-    os.mkdir("files")
-try:
     os.mkdir("doc")
+    os.mkdir("img")
 except:
-    
-    os.mkdir("doc")
+    pass
 os.chdir("..")
-borrar(FICHERO)
 
+
+copiar_img()
+borrar(FICHERO)
 cursodoc=etree.parse('copia/course/course.xml')
 titulo=cursodoc.find("fullname").text
 descripcion=cursodoc.find("summary").text
@@ -78,7 +87,8 @@ for seccion in secciones:
             summary=summary[1:]
         if len(summary)>0:
             escribir(FICHERO)
-            escribir(FICHERO,"## %s"%quitar_html(summary))
+            #escribir(FICHERO,"## %s"%quitar_html(summary))
+            escribir(FICHERO,"## %s"%images(summary))
             escribir(FICHERO)
     except:
         pass
@@ -90,7 +100,8 @@ for seccion in secciones:
             doclabel=etree.parse("copia/%s/label.xml" % actividad.find("directory").text)
             escribir(FICHERO)
             #escribir(FICHERO,"#### %s" % actividad.find("title").text)
-            escribir(FICHERO,"#### %s" % doclabel.find("label/intro").text)
+            #escribir(FICHERO,"#### %s" % quitar_html(doclabel.find("label/intro").text))
+            escribir(FICHERO,"#### %s" % images(doclabel.find("label/intro").text))
             escribir(FICHERO)
         elif tipo=="url":
             docactivity=etree.parse("copia/%s/url.xml" % actividad.find("directory").text)
@@ -129,7 +140,7 @@ for seccion in secciones:
             borrar(nomfich,DIR+"doc/")
             try:
                 escribir(nomfich,"# %s" % actividad.find("title").text,DIR+"doc/")
-                escribir(nomfich,docpage.find("page/content").text,DIR+"doc/")
+                escribir(nomfich,images(docpage.find("page/content").text),DIR+"doc/")
             except:
                 pass
             escribir(FICHERO,"* [%s](%s)"%(actividad.find("title").text,"doc/"+nomfich))
@@ -137,4 +148,4 @@ for seccion in secciones:
         else:
             escribir(FICHERO, "* %s (%s)" % (actividad.find("title").text,actividad.find("modulename").text))
 
-        print("* %s (%s)" % (actividad.find("title").text,actividad.find("modulename").text))
+        #print("* %s (%s)" % (actividad.find("title").text,actividad.find("modulename").text))
