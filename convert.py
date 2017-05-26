@@ -7,7 +7,7 @@ FICHERO="README.md"
 
 def elimina_tildes(cadena):
     s = ''.join((c for c in unicodedata.normalize('NFD',unicode(cadena)) if unicodedata.category(c) != 'Mn'))
-    return s.decode()
+    return s
 
 
 def borrar(fich,dir=DIR):
