@@ -87,8 +87,10 @@ for seccion in secciones:
     for actividad in actividades:
         tipo = actividad.find("modulename").text
         if tipo=="label":
+            doclabel=etree.parse("copia/%s/label.xml" % actividad.find("directory").text)
             escribir(FICHERO)
-            escribir(FICHERO,"#### %s" % actividad.find("title").text)
+            #escribir(FICHERO,"#### %s" % actividad.find("title").text)
+            escribir(FICHERO,"#### %s" % doclabel.find("label/intro").text)
             escribir(FICHERO)
         elif tipo=="url":
             docactivity=etree.parse("copia/%s/url.xml" % actividad.find("directory").text)
