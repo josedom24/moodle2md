@@ -82,7 +82,7 @@ for seccion in secciones:
             else:
                 docassign=etree.parse("copia/%s/assign.xml" % actividad.find("directory").text)
                 try:
-                    escribir(nomfich,actividad.find("title").text,IR+"doc/")
+                    escribir(nomfich,actividad.find("title").text,DIR+"doc/")
                     escribir(nomfich,docassign.find("assign/intro").text,DIR+"doc/")
                 except:
                     pass
