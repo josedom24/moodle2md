@@ -34,11 +34,15 @@ borrar(FICHERO)
 
 cursodoc=etree.parse('copia/course/course.xml')
 titulo=cursodoc.find("fullname").text
+descripcion=cursodoc.find("summary").text
 
 doc = etree.parse('copia/moodle_backup.xml')
 
 #titulo=doc.find("information/original_course_fullname").text
 escribir(FICHERO,"# %s" % titulo)
+escribir(FICHERO)
+
+escribir(FICHERO,"# %s" % descripcion)
 escribir(FICHERO)
 
 secciones=doc.find("information/contents/sections")
@@ -85,3 +89,5 @@ for seccion in secciones:
 
         else:
             escribir(FICHERO, "* %s (%s)" % (actividad.find("title").text,actividad.find("modulename").text))
+
+        print("* %s (%s)" % (actividad.find("title").text,actividad.find("modulename").text))
