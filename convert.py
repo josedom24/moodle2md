@@ -78,6 +78,7 @@ for seccion in secciones:
             borrar(nomfich,DIR+"doc/")
             if len(docassign.getroot())>0:
                 for event in docassign.getroot():
+                    escribir(nomfich,actividad.find("title").text,DIR+"doc/")
                     escribir(nomfich,event.find("description").text,DIR+"doc/")
             else:
                 docassign=etree.parse("copia/%s/assign.xml" % actividad.find("directory").text)
