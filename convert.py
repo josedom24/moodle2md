@@ -29,9 +29,9 @@ def escribir(fich,texto="\n",dir=DIR):
         if len(texto)>1 and texto[-1]!="\n":
             fichero.write("\n")
 
-def images(html,dir=""):
-    html= html.replace("$@FILEPHP@$$@SLASH@$img$@SLASH@$",dir+"img/")
-    html= html.replace("$@FILEPHP@$$@SLASH@$",dir+"img/")
+def images(html):
+    html= html.replace("$@FILEPHP@$$@SLASH@$img$@SLASH@$","img/")
+    html= html.replace("$@FILEPHP@$$@SLASH@$","img/")
     return html
 
 
@@ -105,7 +105,7 @@ def getSeccionesActividades():
 def getLabel(actividad):
     doclabel=etree.parse("copia/%s/label.xml" % actividad.find("directory").text)
     escribir(FICHERO)
-    escribir(FICHERO,"#### %s" % images(doclabel.find("label/intro").text),"../")
+    escribir(FICHERO,"#### %s" % images(doclabel.find("label/intro").text))
     escribir(FICHERO)
 
 def getUrl(actividad):
@@ -141,7 +141,7 @@ def getPage(actividad):
     nomfich=getNombreFichero(actividad.find("title").text)
     try:
         escribir(nomfich,"# %s" % actividad.find("title").text,DIR+"doc/")
-        escribir(nomfich,images(docpage.find("page/content").text),DIR+"doc/","../")
+        escribir(nomfich,images(docpage.find("page/content").text),DIR+"doc/")
     except:
         pass
     escribir(FICHERO,"* [%s](%s)"%(actividad.find("title").text,"doc/"+nomfich))  
