@@ -31,7 +31,7 @@ def escribir(fich,texto="\n",dir=DIR):
 
 def images(html):
     html= html.replace("$@FILEPHP@$$@SLASH@$img$@SLASH@$","img/")
-    html= html.replace("$@FILEPHP@$$@SLASH@$","img/")
+    html= html.replace("$@FILEPHP@$$@SLASH@$","../img/")
     return html
 
 
