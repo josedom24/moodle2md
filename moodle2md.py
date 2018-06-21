@@ -5,6 +5,9 @@ from sys import argv
 import os,shutil
 import unicodedata
 import argparse
+import zipfile
+
+
 
 def getNombreFichero(nombre):
     nombre=elimina_tildes(nombre)
@@ -139,8 +142,12 @@ def getResource(actividad,DIR_COPIA,DIR,FICHERO):
     fileid=docresource.getroot().get("contextid")
     docfiles=etree.parse(DIR_COPIA+"/files.xml")
     fichero=docfiles.xpath("//file[contextid=%s]"%fileid)   
-    shutil.copyfile(DIR_COPIA+"/files/%s/%s"%(fichero[0].find("contenthash").text[0:2],fichero[0].find("contenthash").text),DIR+"files/%s"%fichero[0].find("filename").text) 
-    escribir(DIR,FICHERO,"* [%s](%s)"%(actividad.find("title").text,"files/"+fichero[0].find("filename").text))
+    try:
+        shutil.copyfile(DIR_COPIA+"/files/%s/%s"%(fichero[0].find("contenthash").text[0:2],fichero[0].find("contenthash").text),DIR+"files/%s"%fichero[0].find("filename").text) 
+        escribir(DIR,FICHERO,"* [%s](%s)"%(actividad.find("title").text,"files/"+fichero[0].find("filename").text))
+    except:
+        print "Fichero no encontrado."
+        print actividad.find("directory").text,fileid
 
 def getPage(actividad,DIR_COPIA,DIR,FICHERO):
     docpage=etree.parse(DIR_COPIA+"/%s/page.xml" % actividad.find("directory").text)    
