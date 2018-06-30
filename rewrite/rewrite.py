@@ -20,7 +20,13 @@ def elimina_tildes(cadena):
     return s
 
 def elimina_caracteres_nombre_fichero(nomfich):
-    car=("/","?","(",")"," ",",",".",":")
+    car=("/","?","(",")"," ",",",".",":",";")
+    
+    nomfich=nomfich.replace("1.- ","")
+    nomfich=nomfich.replace("2.- ","")
+    nomfich=nomfich.replace("3.- ","")
+    nomfich=nomfich.replace("4.- ","")
+    
     for c in car:
         nomfich=nomfich.replace(c,"_")
     if nomfich[-1]=="_":
