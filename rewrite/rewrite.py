@@ -20,7 +20,7 @@ def elimina_tildes(cadena):
     return s
 
 def elimina_caracteres_nombre_fichero(nomfich):
-    car=("/","?","(",")"," ",",",".")
+    car=("/","?","(",")"," ",",",".",":")
     for c in car:
         nomfich=nomfich.replace(c,"_")
     if nomfich[-1]=="_":
@@ -116,21 +116,24 @@ def getPage(actividad,lista):
 
 
 def main():
+    base="http://plataforma2.josedomingo.org/pledin/cursos/"
+    base2="servicios2010/"
     lista=[]
     getSeccionesActividades(lista)
+    bandera=False
     for l in lista:
-        if "files/" in l[1] or "doc/" in l[1]:
-            base="http://plataforma2.josedomingo.org/pledin/cursos/"
-            base2="mv_portal_educativo_2006/"
+        if ("files/" in l[1] or "doc/" in l[1]) and "url/" not in l[0]:
             r=requests.get(base+base2+l[1].replace(".md",".html"))
-            print r.url,r.status_code
-
-    for l in lista:
-        print 'RewriteCond %%{QUERY_STRING} id=%s'%l[0].split("=")[1]
-        if "url/" in l[0]:
-            print 'RewriteRule ^%s$ %s'%(l[0].split("?")[0],l[1]+" [R]")
-        else:
-            print 'RewriteRule ^%s$ %s'%(l[0].split("?")[0],base+base2+l[1].replace(".md",".html")+" [R]")
+            if r.status_code==404:
+                print r.url,r.status_code
+                bandera=True
+    if not bandera:
+        for l in lista:
+            print 'RewriteCond %%{QUERY_STRING} id=%s'%l[0].split("=")[1]
+            if "url/" in l[0]:
+                print 'RewriteRule ^%s$ %s'%(l[0].split("?")[0],l[1]+"? [R,L]")
+            else:
+                print 'RewriteRule ^%s$ %s'%(l[0].split("?")[0],base+base2+l[1].replace(".md",".html")+"? [R,L]")
 
 
 if __name__ == '__main__':
