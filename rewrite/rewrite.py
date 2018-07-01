@@ -123,7 +123,7 @@ def getPage(actividad,lista):
 
 def main():
     base="http://plataforma2.josedomingo.org/pledin/cursos/"
-    base2="servicios2010/"
+    base2="cloud2013/"
     lista=[]
     getSeccionesActividades(lista)
     bandera=False
